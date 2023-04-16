@@ -1,0 +1,22 @@
+name: Docker image with TexLive and Pandoc
+on:
+  push:
+    paths:
+      - paper/Dockerfile
+
+jobs:
+  build-docs:
+    name: Build Docker image with TexLive and Pandoc
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u tmscer --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/tmscer/texlive-pandoc:latest .
+        working-directory: ./paper
+
+      - name: Push Docker image
+        run: docker push ghcr.io/tmscer/texlive-pandoc:latest
