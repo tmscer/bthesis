@@ -1,0 +1,41 @@
+name: Build paper
+on:
+  push:
+    paths:
+      - paper/**
+
+env:
+  S3_BUCKET: f35ba6fb-bthe
+
+jobs:
+  build-docs:
+    name: Compile Markdown into PDF
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u tmscer --password-stdin
+
+      - name: Pull TexLive+Pandoc image
+        run: docker pull ghcr.io/tmscer/texlive-pandoc:latest
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build PDF
+        run: >
+          docker run --rm -v $(pwd):/src -w /src ghcr.io/tmscer/texlive-pandoc:latest
+          pandoc -V geometry:margin=1.5in paper/paper.md -o paper.pdf -f markdown+implicit_figures
+
+      - name: Upload to S3
+        env:
+          AWS_DEFAULT_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: aws s3 cp paper.pdf s3://${{ env.S3_BUCKET }}/paper.pdf --acl public-read
+
+      - name: Save PDF
+        uses: actions/upload-artifact@v3 
+        with:
+          name: paper
+          path: paper.pdf
+          if-no-files-found: error
