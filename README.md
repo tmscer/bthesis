@@ -1,4 +1,3 @@
-
 [![Build paper](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml/badge.svg)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml)
 [![Docker image with TexLive and Pandoc](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml/badge.svg)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml)
 
@@ -26,3 +25,12 @@ See it [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/paper.pdf). It's 
 - [CS224N: Natural Language Processing with Deep Learning (lectures 1-14)](http://web.stanford.edu/class/cs224n/)
 - [Mikolov, Tomas, et al. "Efficient estimation of word representations in vector space"](https://arxiv.org/abs/1301.3781)
 - [Bojanowski, Piotr, et al. "Enriching word vectors with subword information" ](https://arxiv.org/abs/1607.04606)
+- [Reimers, Nils, and Gurevych. "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks"](https://arxiv.org/pdf/1908.10084.pdf)
+
+  - [Sentrance Transformers on Hugging Face](https://huggingface.co/sentence-transformers)
+  - Their solo [website](https://www.sbert.net/)
+    which claims
+
+    > You can use this framework to compute sentence / text embeddings for more than 100 languages.
+
+    and contains a list of [pretrained models](https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models/)
