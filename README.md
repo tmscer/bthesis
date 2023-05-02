@@ -22,48 +22,49 @@ See it [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/paper.pdf). It's 
 
 # Resources
 
-- [CS224N: Natural Language Processing with Deep Learning (lectures 1-14)](http://web.stanford.edu/class/cs224n/)
+### [CS224N: Natural Language Processing with Deep Learning (lectures 1-14)](http://web.stanford.edu/class/cs224n/)
 
-  Gives good introduction to NLP and neural networks. This run is from 2021 so OpenAI's advances
-  aren't mentioned but that isn't that relevant to this project which is more about applying embeddings.
+Gives good introduction to NLP and neural networks. This run is from 2021 so OpenAI's advances
+aren't mentioned but that isn't that relevant to this project which is more about applying embeddings.
 
-- [Mikolov, Tomas, et al. "Efficient estimation of word representations in vector space"](https://arxiv.org/abs/1301.3781)
-- [Bojanowski, Piotr, et al. "Enriching word vectors with subword information" ](https://arxiv.org/abs/1607.04606)
+### [Mikolov, Tomas, et al. "Efficient estimation of word representations in vector space"](https://arxiv.org/abs/1301.3781)
 
-  Word embeddings are composed of n-grams, e.g. word "where" as a 3-gram would be "&lt;wh",
-  "whe", "her" (not the same as "&lt;her&gt;"), "ere", "re&gt;" and special "&lt;where&gt;.
-  This is useful for languges with rich morphology, e.g. Czech and other slavic languages.
-  They use the skip-gram model from Word2Vec with this subword information and outperform the
-  original on several benchmarks or come very close to it.
+### [Bojanowski, Piotr, et al. "Enriching word vectors with subword information" ](https://arxiv.org/abs/1607.04606)
 
-- [Reimers, Nils, and Gurevych. "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks"](https://arxiv.org/pdf/1908.10084.pdf)
+Word embeddings are composed of n-grams, e.g. word "where" as a 3-gram would be "&lt;wh",
+"whe", "her" (not the same as "&lt;her&gt;"), "ere", "re&gt;" and special "&lt;where&gt;.
+This is useful for languges with rich morphology, e.g. Czech and other slavic languages.
+They use the skip-gram model from Word2Vec with this subword information and outperform the
+original on several benchmarks or come very close to it.
 
-  - [Sentence Transformers on Hugging Face](https://huggingface.co/sentence-transformers)
-  - Their solo [website](https://www.sbert.net/)
-    which claims
+### [Reimers, Nils, and Gurevych. "Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks"](https://arxiv.org/pdf/1908.10084.pdf)
 
-    > You can use this framework to compute sentence / text embeddings for more than 100 languages.
+- [Sentence Transformers on Hugging Face](https://huggingface.co/sentence-transformers)
+- Their solo [website](https://www.sbert.net/)
+  which claims
 
-    and contains a list of [pretrained models](https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models/)
+  > You can use this framework to compute sentence / text embeddings for more than 100 languages.
 
-- Ghasemi, Negin, and Saeedeh Momtazi. "Neural text similarity of user reviews for improving collaborative filtering recommender systems"
+  and contains a list of [pretrained models](https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models/)
 
-  Their proposed approach outperforms baseline model that uses only product ratings and
-  a model called [DeepCoNN by Zheng et al. (2017)](https://arxiv.org/pdf/1701.04783.pdf)
-  by utilizing ratings and text similarity of reviews.
+### Ghasemi, Negin, and Saeedeh Momtazi. "Neural text similarity of user reviews for improving collaborative filtering recommender systems"
 
-  They claim their method is efficient on CPU whereas other complex neural models are
-  computationally demanding.
+Their proposed approach outperforms baseline model that uses only product ratings and
+a model called [DeepCoNN by Zheng et al. (2017)](https://arxiv.org/pdf/1701.04783.pdf)
+by utilizing ratings and text similarity of reviews.
 
-  The approach to ratings could be used for article likes/dislikes (or emojis for more
-  granular feedback) as well as to how many % of an article a user has read.
+They claim their method is efficient on CPU whereas other complex neural models are
+computationally demanding.
 
-  Text similarity could be used for discussion comments, although those can contain opinions
-  on article, topic and author. It would be ideal to extract some form of opinion on all three. In contrast, product reviews are more objective and have a narrower focus.
+The approach to ratings could be used for article likes/dislikes (or emojis for more
+granular feedback) as well as to how many % of an article a user has read.
 
-  Nevertheless, we can try different text similarity methods - we can try different embeddings.
-  E.g. the most complex model they used was an autoencoder LSTM. There are transformer-based
-  models that could provide better embeddings.
+Text similarity could be used for discussion comments, although those can contain opinions
+on article, topic and author. It would be ideal to extract some form of opinion on all three. In contrast, product reviews are more objective and have a narrower focus.
 
-  Might use their evaluation metric Root Mean Squared Error (RMSE).
+Nevertheless, we can try different text similarity methods - we can try different embeddings.
+E.g. the most complex model they used was an autoencoder LSTM. There are transformer-based
+models that could provide better embeddings.
+
+Might use their evaluation metric Root Mean Squared Error (RMSE).
 
