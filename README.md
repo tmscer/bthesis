@@ -68,3 +68,23 @@ models that could provide better embeddings.
 
 Might use their evaluation metric Root Mean Squared Error (RMSE).
 
+### [Kocián, Náplava, Štancl, and Kadlec. "Siamese BERT-based Model for Web Search Relevance Ranking Evaluated on a New Czech Dataset"](https://arxiv.org/pdf/2112.01810.pdf)
+
+Their goal was to have a small and fast model that performs well, that's why they used the Electra-small architecture.
+
+The model is pretrained using by random token change which the model is supposed to detect. They then fine tune the model
+for several tasks such as web search relevance ranking (in the paper) and on GitHub they mention it being used for clickbait
+title detection, query typo correction and sentiment analysis.
+
+In web search, they use it for stage 2 ranking on around 20 thousand documents given a query for ranking. In contrast, the previous
+paper uses the models for embeddings only and then uses some distance metric for ranking. For use in web search, they created
+two finetuned variants, one is a query-document which isn't practical because it needs to go over all documents for a query, the other
+is a siamese model that produces embeddings which can be fed to cosine distance, euclid distance, pooling, etc. The output is
+then fed to a feed-forward network to produce the final score. The more computationally expensive variant query-doc was used
+as a teacher for the siamese model.
+
+One downside of this model is that it needs to be finetuned and their new DaReCzech dataset for search ranking is provided per request
+for non-commercial uses. This model cannot be therefore used for a content-based recommender system. They however, mentioned other
+models which are either multilingual or specificly trained for Czech language I should check out: mBERT and RobeCzech.
+
+The model is available at [HuggingFace seznam/small-e-czech](https://huggingface.co/Seznam/small-e-czech).
