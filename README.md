@@ -88,3 +88,45 @@ for non-commercial uses. This model cannot be therefore used for a content-based
 models which are either multilingual or specificly trained for Czech language I should check out: mBERT and RobeCzech.
 
 The model is available at [HuggingFace seznam/small-e-czech](https://huggingface.co/Seznam/small-e-czech).
+
+### [Maciej Kula. "Metadata Embeddings for User and Item Cold-start Recommendations"](https://arxiv.org/pdf/1507.08439.pdf)
+
+A hybrid model (called LightFM) that should work well when content features are missing but there are many interactions for collaborative filtering and vice versa.
+Online learning and addition of features to items is possible. Learning custom chosen features (human and from other systems) and embeddings for
+items and users at the same time. They used AUC metric for evaluation on the MovieLens 10M and CrossValidated datasets.
+
+This means several things:
+
+1. We can give articles fixed textual embeddings.
+2. We can give articles latent features such as which author wrote it and consider authors as individual features with unknown values.
+3. We can use embeddings of author's bio as a feature.
+4. LightFM used tags as features and later was able to find similar tags. This allows us to learn embeddings for any categorization of articles.
+5. We can also dynamically add types of categorization (sections, tags, etc.) and categories themselves.
+6. We can compute other article's features using specialized models and add those features to articles (such as clickbaitiness and sentiment).
+
+This simplifies the problem by having unified model that can leverage both content-based and collaborative filtering.
+Originally, my mental model was that there would be independent collaborative model evaluated e.g. on MovieLens dataset and content-based
+filtering would be done using distance of article embeddings.
+
+However, there is [critique of LightFM's hybrid approach](https://amanda-shu.medium.com/lightfm-performance-7515e57f5cfe):
+
+> In this article, we have evaluated the LightFM code package and compared the performance of its pure and hybrid models along with baseline algorithms on the MovieLens dataset.
+> Although Dacrema’s work indicates that many algorithms that have been published in the field of recommendation systems have struggled to beat out baselines, we find that
+> LightFM’s pure collaborative filtering model outperformed all baselines for the precision and recall metrics for a majority of the cutoffs. However, we find the LightFM’s
+> hybrid model with item features did not perform as well as a few baseline algorithms, such as ItemKNN. The LightFM-hybrid also performed worse than the pure LightFM model,
+> which falls in line with work by other data scientists who use the LightFM package in practice. While the pure LightFM model outperformed the baselines as expected,
+> the inability of the LightFM’s hybrid model to beat some of these baselines show that even with commonly used code packages, there may be still issues in their ability to
+> deliver basic expectations.
+
+But they also wrote:
+
+> Our results show that after optimization of parameters for the baseline algorithms, the pure LightFM model outperforms all of the
+> baselines for both precision and recall at all cutoffs, with the exception of precision@5, where ItemKNN is the best. This result
+> is in agreement with our hypothesis, and it indicates that LightFM’s pure collaborative model is a good choice for data scientists
+> to use in practice.
+
+Possible explanation: bad item features, it's evaluated on one dataset and it is MovieLens 100k but the original LightFM paper used the 10M variant and was also evaluated
+on the CrossValidated dataset where they used user's about text as a feature using a bag-of-words representation.
+
+I should explore [Dacrema et al. "Are We Really Making Much Progress? A Worrying Analysis of Recent Neural Recommendation Approaches"](https://arxiv.org/pdf/1907.06902.pdf) to get more context into
+baseline recommender algorithms that the critique blogpost mentions.
