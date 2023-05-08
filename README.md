@@ -89,6 +89,12 @@ models which are either multilingual or specificly trained for Czech language I 
 
 The model is available at [HuggingFace seznam/small-e-czech](https://huggingface.co/Seznam/small-e-czech).
 
+### [Takács, and Tikk. "Alternating least squares for personalized ranking"](https://www.researchgate.net/publication/254464370_Alternating_least_squares_for_personalized_ranking)
+
+This paper mainly demonstrates how an objective function and its equivalent forms can impact training speed.
+It also handles implicit feedback (e.g. a user read an article but didn't like it/rate it/comment on it) which
+is a useful property as reading an article (and what percentage the user read) is an implicit feature.
+
 ### [Maciej Kula. "Metadata Embeddings for User and Item Cold-start Recommendations"](https://arxiv.org/pdf/1507.08439.pdf)
 
 A hybrid model (called LightFM) that should work well when content features are missing but there are many interactions for collaborative filtering and vice versa.
