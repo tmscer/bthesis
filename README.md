@@ -20,6 +20,11 @@ The task is to compare various embeddings and their usability in recommender sys
 
 See it [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/paper.pdf). It's generated automatically on every relevant commit.
 
+# Handwritten notes on everything
+
+See them [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/notes.pdf). Heading on first page doesn't match,
+the PDF also contains notes on recommender systems. Updated are uploaded sporadically.
+
 # Resources
 
 ### [CS224N: Natural Language Processing with Deep Learning (lectures 1-14)](http://web.stanford.edu/class/cs224n/)
