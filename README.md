@@ -141,3 +141,36 @@ on the CrossValidated dataset where they used user's about text as a feature usi
 
 I should explore [Dacrema et al. "Are We Really Making Much Progress? A Worrying Analysis of Recent Neural Recommendation Approaches"](https://arxiv.org/pdf/1907.06902.pdf) to get more context into
 baseline recommender algorithms that the critique blogpost mentions.
+
+### [Dacrema et al. "Are We Really Making Much Progress? A Worrying Analysis of Recent Neural Recommendation Approaches"](https://arxiv.org/pdf/1907.06902.pdf)
+
+They demonstrate tuned simple approaches often outperform complex neural models. They state several factors contribute to this phenomenon:
+
+1. Weak baselines are used or they aren't tuned.
+2. Weak methods are established as baselines as it isn't clear what the state-of-the-art method is.
+3. It's hard to compare and reproduce results as datasets and evaluation metrics are different and often not well justified.
+
+List of used simple methods:
+
+- Non-personalized
+
+  - TopPopular: Recommends the most popular items to everyone
+
+- Nearest-Neighbor
+
+  - UserKNN: User-based k-nearest neighbors
+  - ItemKNN: Item-based k-nearest neighbors
+
+- Graph-based
+
+- P3𝛼: A graph-based method based on random walks
+- RP3𝛽: An extension of P3𝛼
+
+- Content-Based and Hybrid
+
+  - ItemKNN-CBF: ItemKNN with content-based similarity
+  - ItemKNN-CFCBF: A simple item-based hybrid CBF/CF approach
+  - UserKNN-CBF: UserKNN with content-based similarity
+  - UserKNN-CFCBF: A simple user-based hybrid CBF/CF approach
+
+- And some other non-neural machine learning approaches
