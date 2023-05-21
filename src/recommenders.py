@@ -140,7 +140,7 @@ class Recommender:
         user_similarities = self.load_collaborative_user_similarities()[user_id, :]
 
         # ignore the closest user which will be the user itself
-        similar_users = user_similarities.argsort()[::-1][1: k_users + 1]
+        similar_users = user_similarities.argsort()[::-1][: k_users + 1]
         k_user_similarities = user_similarities[similar_users]
 
         item_scores = np.zeros(self.loader.num_items())
@@ -148,7 +148,7 @@ class Recommender:
 
         for similarity, similar_user in zip(k_user_similarities, similar_users):
             if similar_user == user_id:
-                raise Exception("Similar user cannot be the same as the user")
+                continue
 
             item_scores += similarity * user_item_matrix[similar_user, :]
 
@@ -163,7 +163,7 @@ class Recommender:
         item_similarities = self.load_collaborative_item_similarities()[item_id, :]
 
         # ignore the closest item which will be the item itself
-        similar_items = item_similarities.argsort()[::-1][1: k_items + 1]
+        similar_items = item_similarities.argsort()[::-1][1 : k_items + 1]
         k_item_similarities = item_similarities[similar_items]
 
         user_item_matrix = self.loader.load_user_item_matrix()
@@ -203,8 +203,9 @@ class Recommender:
             pooling,
         )
 
-    def embedding_weighted_similar_items(self, user_id, k_users, k_items, pooling="mean"):
+    def embedding_weighted_similar_items(self, user_id, k_users, pooling="mean"):
         user_similarities = self.load_collaborative_user_similarities()[user_id, :]
+        embedding_similarities = self.load_embedding_item_similarities()
 
         # get one more user to account for user with `user_id`
         similar_users = user_similarities.argsort()[::-1][: k_users + 1]
@@ -233,9 +234,7 @@ class Recommender:
             weight = pooling(similarities)
             item_scores += weight * user_item_matrix[similar_user, :]
 
-        recommendations = np.argsort(item_scores)[::-1][:k_items]
-
-        return recommendations
+        return item_scores
 
 
 def pooled_vector_search(feature_matrix, pooled_matrix, pooled_id, k, pooling):

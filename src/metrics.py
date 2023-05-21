@@ -37,7 +37,6 @@ def _test_cosine_distance_matrix():
     test_target = np.array([[7, 8], [-1, 2]])
 
     matrix = cosine_distance_matrix(test_matrix, test_target, 0.1)
-    print(matrix)
 
     for i, a in enumerate(test_matrix):
         for j, b in enumerate(test_target):

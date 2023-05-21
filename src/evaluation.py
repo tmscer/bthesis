@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def calculate_tp_fp_fn_tn(recommended, relevant, num_items):
     true_positives = len(set(recommended).intersection(relevant))
     false_positives = len(recommended) - true_positives
@@ -48,3 +51,31 @@ def _test_precision_and_recall():
 
 _test_calculate_tp_fp_fn_tn()
 _test_precision_and_recall()
+
+
+def is_there_a_hit(recommended, relevant):
+    return len(set(recommended).intersection(relevant)) > 0
+
+
+def hitrate(hits):
+    return np.sum(hits) / len(hits)
+
+
+def _test_is_there_a_hit():
+    assert is_there_a_hit([1, 2, 3], [3, 4, 5])
+    assert not is_there_a_hit([1, 2, 3], [4, 5, 6])
+
+
+def _test_hitrate():
+    assert hitrate([True, True, False, False, False]) == 0.4
+    assert hitrate([1.0, 1.0, 0.0, 0.0, 0.0]) == 0.4
+
+    assert hitrate([False, False, False]) == 0.0
+    assert hitrate([0.0, 0.0, 0.0]) == 0.0
+
+    assert hitrate([True, True]) == 1.0
+    assert hitrate([1.0, 1.0]) == 1.0
+
+
+_test_is_there_a_hit()
+_test_hitrate()
