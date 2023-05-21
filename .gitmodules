@@ -1,0 +1,3 @@
+[submodule "CiteULike-a"]
+	path = datasets/citeulike-a
+	url = https://github.com/js05212/citeulike-a.git
