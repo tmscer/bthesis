@@ -79,3 +79,12 @@ def _test_hitrate():
 
 _test_is_there_a_hit()
 _test_hitrate()
+
+
+def rmse(predicted, actual):
+    return np.sqrt(np.mean((predicted - actual) ** 2))
+
+
+def _test_rmse():
+    assert rmse(np.array([1, 2, 3]), np.array([1, 2, 3])) == 0.0
+    assert rmse(np.array([1, 2, 3]), np.array([2, 3, 4])) == 1.0
