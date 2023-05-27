@@ -210,9 +210,6 @@ class Recommender:
         # get one more user to account for user with `user_id`
         similar_users = user_similarities.argsort()[::-1][: k_users + 1]
 
-        relevant_items = self.relevant_items(user_id)
-        relevant_items_embeddings = self.load_text_embeddings()[relevant_items, :]
-
         user_item_matrix = self.loader.load_user_item_matrix()
         item_scores = np.zeros(self.loader.num_items())
 
@@ -222,14 +219,11 @@ class Recommender:
             if similar_user == user_id:
                 continue
 
-            candidate_user_items = self.relevant_items(similar_user)
-            candidate_user_items_embeddings = self.load_text_embeddings()[
-                candidate_user_items, :
-            ]
+            similarities = []
 
-            similarities = cosine_similarity_matrix(
-                relevant_items_embeddings, candidate_user_items_embeddings
-            )
+            for relevant_item in self.relevant_items(user_id):
+                for candidate_item in self.relevant_items(similar_user):
+                    similarities.append(embedding_similarities[relevant_item, candidate_item])
 
             weight = pooling(similarities)
             item_scores += weight * user_item_matrix[similar_user, :]
