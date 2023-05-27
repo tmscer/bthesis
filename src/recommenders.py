@@ -23,8 +23,14 @@ class CacheFiles:
     def collaborative_item_similarities_cache(self):
         return path.join(self.root, "item_similarities.npz")
 
-    def embedding_item_similarities_cache(self):
-        return path.join(self.root, "embedding_item_similarities.npz")
+    def title_embedding_item_similarities_cache(self):
+        return path.join(self.root, "title_embedding_item_similarities.npz")
+
+    def abstract_embedding_item_similarities_cache(self):
+        return path.join(self.root, "abstract_embedding_item_similarities.npz")
+
+    def text_embedding_item_similarities_cache(self):
+        return path.join(self.root, "text_embedding_item_similarities.npz")
 
 
 class Recommender:
@@ -34,7 +40,10 @@ class Recommender:
 
         self.collaborative_user_similarities = None
         self.collaborative_item_similarities = None
-        self.embedding_item_similarities = None
+
+        self.title_embedding_item_similarities = None
+        self.abstract_embedding_item_similarities = None
+        self.text_embedding_item_similarities = None
 
         self.title_embeddings = None
         self.abstract_embeddings = None
@@ -100,17 +109,41 @@ class Recommender:
 
         return self.collaborative_item_similarities
 
-    def load_embedding_item_similarities(self):
-        if self.embedding_item_similarities is None:
+    def load_title_embedding_item_similarities(self):
+        if self.title_embedding_item_similarities is None:
+            title_embeddings = self.load_title_embeddings()
+            item_similarities = cache_np(
+                lambda: cosine_similarity_matrix(title_embeddings, title_embeddings),
+                self.files.title_embedding_item_similarities_cache(),
+            )
+
+            self.title_embedding_item_similarities = item_similarities
+
+        return self.title_embedding_item_similarities
+
+    def load_abstract_embedding_item_similarities(self):
+        if self.abstract_embedding_item_similarities is None:
+            abstract_embeddings = self.load_abstract_embeddings()
+            item_similarities = cache_np(
+                lambda: cosine_similarity_matrix(abstract_embeddings, abstract_embeddings),
+                self.files.abstract_embedding_item_similarities_cache(),
+            )
+
+            self.abstract_embedding_item_similarities = item_similarities
+
+        return self.abstract_embedding_item_similarities
+
+    def load_text_embedding_item_similarities(self):
+        if self.text_embedding_item_similarities is None:
             text_embeddings = self.load_text_embeddings()
             item_similarities = cache_np(
                 lambda: cosine_similarity_matrix(text_embeddings, text_embeddings),
-                self.files.embedding_item_similarities_cache(),
+                self.files.text_embedding_item_similarities_cache(),
             )
 
-            self.embedding_item_similarities = item_similarities
+            self.text_embedding_item_similarities = item_similarities
 
-        return self.embedding_item_similarities
+        return self.text_embedding_item_similarities
 
     def user_vector(self, user_id):
         return self.loader.load_user_item_matrix()[user_id, :]
@@ -203,9 +236,17 @@ class Recommender:
             pooling,
         )
 
-    def embedding_weighted_similar_items(self, user_id, k_users, pooling="mean"):
+    def embedding_weighted_similar_items(self, user_id, k_users, pooling="mean", embeddings="text"):
         user_similarities = self.load_collaborative_user_similarities()[user_id, :]
-        embedding_similarities = self.load_embedding_item_similarities()
+
+        if embeddings == "text":
+            embedding_similarities = self.load_text_embedding_item_similarities()
+        elif embeddings == "title":
+            embedding_similarities = self.load_title_embedding_item_similarities()
+        elif embeddings == "abstract":
+            embedding_similarities = self.load_abstract_embedding_item_similarities()
+        else:
+            raise ValueError(f"Unknown embeddings \"{embeddings}\"")
 
         # get one more user to account for user with `user_id`
         similar_users = user_similarities.argsort()[::-1][: k_users + 1]
