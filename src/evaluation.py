@@ -40,6 +40,10 @@ def calculate_precision_and_recall(tp_fp_fn_tn):
     return precision, recall
 
 
+def f1_score(precision, recall):
+    return 2 / ((1 / precision) + (1 / recall))
+
+
 def _test_precision_and_recall():
     # example from wikipedia
     tp_fp_fn_tn = {"tp": 5, "fp": 3, "fn": 7, "tn": 7}
