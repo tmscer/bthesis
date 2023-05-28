@@ -151,6 +151,9 @@ class Recommender:
     def item_vector(self, item_id):
         return self.loader.load_user_item_matrix()[:, item_id]
 
+    def item_tag_vector(self, item_id):
+        return self.loader.load_item_tag_matrix()[item_id, :]
+
     def relevant_items(self, user_id):
         user_vector = self.user_vector(user_id)
 
@@ -167,6 +170,12 @@ class Recommender:
         item_vector = self.item_vector(item_id)
 
         return find_closest_vectors(user_item_matrix.T, item_vector, k)
+
+    def collaborative_similar_items_using_tags(self, item_id, k):
+        item_tag_matrix = self.loader.load_item_tag_matrix()
+        item_tag_vector = self.item_tag_vector(item_id)
+
+        return find_closest_vectors(item_tag_matrix, item_tag_vector, k)
 
     # When `item_id` is `None`, ratings is predicted for all items
     def collaborative_user_knn(self, user_id, k_users, item_id=None):
