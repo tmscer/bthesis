@@ -32,6 +32,9 @@ class CacheFiles:
     def text_embedding_item_similarities_cache(self):
         return path.join(self.root, "text_embedding_item_similarities.npz")
 
+    def tag_embeddings_cache(self):
+        return path.join(self.root, "tag_embeddings.npz")
+
 
 class Recommender:
     def __init__(self, loader):
@@ -48,6 +51,8 @@ class Recommender:
         self.title_embeddings = None
         self.abstract_embeddings = None
         self.text_embeddings = None
+
+        self.tag_embeddings = None
 
     def load_title_embeddings(self):
         if self.title_embeddings is None:
@@ -145,6 +150,17 @@ class Recommender:
 
         return self.text_embedding_item_similarities
 
+    def load_tag_embeddings(self):
+        if self.tag_embeddings is None:
+            tag_embeddings = encode(
+                self.loader.load_tags(),
+                cache_file=self.files.tag_embeddings_cache(),
+            )
+
+            self.tag_embeddings = tag_embeddings
+
+        return self.tag_embeddings
+
     def user_vector(self, user_id):
         return self.loader.load_user_item_matrix()[user_id, :]
 
@@ -229,6 +245,12 @@ class Recommender:
         abstract_embeddings = self.load_abstract_embeddings()
 
         return find_closest_vectors(abstract_embeddings, query_embedding, k)
+
+    def embedding_tag_search(self, query, k):
+        query_embedding = encode(query)
+        tag_embeddings = self.load_tag_embeddings()
+
+        return find_closest_vectors(tag_embeddings, query_embedding, k)
 
     def embedding_similar_items(self, item_id, k):
         text_embeddings = self.load_text_embeddings()
