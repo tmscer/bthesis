@@ -47,6 +47,9 @@ class Loader:
 
         self.docs = None
         self.user_item_matrix = None
+        self.tags = None
+        self.tag_to_id = None
+        self.item_tag_matrix = None
 
     def num_items(self):
         return len(self.load_docs())
@@ -76,3 +79,57 @@ class Loader:
             self.user_item_matrix = user_item_matrix
 
         return self.user_item_matrix
+
+    def load_tags(self):
+        if self.tags is None:
+            with open(self.files.tags()) as f:
+                tags = f.readlines()
+
+            tags = list(map(lambda x: x.strip(), tags))
+   
+            self.tags = np.array(tags)
+
+        return self.tags
+
+    def get_tag_id(self, tag):
+        if self.tag_to_id is None:
+            tags = self.load_tags()
+
+            self.tag_to_id = {tag: i for i, tag in enumerate(tags)}
+
+        return self.tag_to_id[tag]
+
+    def get_item_tags(self, item_id):
+        item_tag_matrix = self.load_item_tag_matrix()
+        item_vector = item_tag_matrix[item_id, :]
+
+        return np.where(item_vector == 1)[0]
+
+    def get_item_tag_names(self, item_id):
+        item_tags = self.get_item_tags(item_id)
+        tags = self.load_tags()
+
+        return tags[item_tags]
+
+    def load_item_tag_matrix(self):
+        if self.item_tag_matrix is None:
+            with open(self.files.item_tag_matrix()) as f:
+                lines = f.readlines()
+
+            tags = self.load_tags()
+            number_of_items = len(lines)
+            item_tag_matrix = np.zeros((number_of_items, len(tags)), dtype=np.int32)
+
+            for item_id, line in enumerate(lines):
+                numbers = list(map(int, line.split(" ")))
+
+                number_of_tags = numbers[0]
+                indices = numbers[1:]
+
+                assert number_of_tags == len(indices)
+
+                item_tag_matrix[item_id, indices] = 1
+
+            self.item_tag_matrix = item_tag_matrix
+
+        return self.item_tag_matrix
