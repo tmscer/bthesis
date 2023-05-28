@@ -174,3 +174,8 @@ List of used simple methods:
   - UserKNN-CFCBF: A simple user-based hybrid CBF/CF approach
 
 - And some other non-neural machine learning approaches
+
+### [SurpriseLib](https://surprise.readthedocs.io/en/stable)
+
+A library for baseline recommender systems. Previously implemented UserKNN model was very similar
+to what I've assumed was used in Decrema et al. 2019 (I was missing a normalization factor).
