@@ -23,7 +23,7 @@ See it [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/paper.pdf). It's 
 # Handwritten notes on everything
 
 See them [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/notes.pdf). Heading on first page doesn't match,
-the PDF also contains notes on recommender systems. Updated are uploaded sporadically.
+the PDF also contains notes on recommender systems. Updates are uploaded sporadically.
 
 # Resources
 
