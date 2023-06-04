@@ -1,5 +1,5 @@
-[![Build paper](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml/badge.svg)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml)
-[![Docker image with TexLive and Pandoc](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml/badge.svg)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml)
+[![Build paper](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml/badge.svg?branch=master)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper.yml)
+[![Docker image with TexLive and Pandoc](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml/badge.svg?branch=master)](https://github.com/tmscer/text-embeddings-for-recommenders/actions/workflows/paper-docker.yml)
 
 # Text Embeddings for Recommender Systems
 
