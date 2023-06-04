@@ -1,5 +1,8 @@
-# Project Report
-# Text Embeddings for Recommender Systems
+# Project Report - Text Embeddings for Recommender Systems
+
+Author: Tomáš Černý
+
+Supervisor: Ing. Jan Drchal, Ph.D.
 
 ## Paper Notes
 
@@ -84,12 +87,11 @@ items and users at the same time. They used AUC metric for evaluation on the Mov
 
 This means several things:
 
-1. We can give articles fixed textual embeddings.
-2. We can give articles latent features such as which author wrote it and consider authors as individual features with unknown values.
-3. We can use embeddings of author's bio as a feature.
-4. LightFM used tags as features and later was able to find similar tags. This allows us to learn embeddings for any categorization of articles.
-5. We can also dynamically add types of categorization (sections, tags, etc.) and categories themselves.
-6. We can compute other article's features using specialized models and add those features to articles (such as clickbaitiness and sentiment).
+1. We can give items fixed textual embeddings.
+2. We can give items latent features such as which author wrote it and consider authors as individual features with unknown values.
+3. LightFM used tags as features and later was able to find similar tags. This allows us to learn embeddings for any categorization of items.
+4. We can also dynamically add types of categorization (tags, etc.).
+5. We can compute other items's features using specialized models (such as clickbaitiness and sentiment).
 
 This simplifies the problem by having unified model that can leverage both content-based and collaborative filtering.
 Originally, my mental model was that there would be independent collaborative model evaluated e.g. on MovieLens dataset and content-based
@@ -156,3 +158,131 @@ List of used simple methods:
 A library for baseline recommender systems. Previously implemented UserKNN model was very similar
 to what I've assumed was used in Dacrema et al. 2019 (I was missing a normalization factor).
 
+
+## Experiments
+
+Dataset CiteULike-a was chosen for these experiments because the recommended items have
+textual content which can be used for embeddings. Even though the dataset is relatively small,
+the embeddings for all items still take up ~1GB.
+
+We calculate precision, recall, their harmonic mean (F1 score) and root mean squared error (RMSE)
+for each approach.
+
+### Implemented approaches
+
+All approaches are some variant of collaborative UserKNN. ItemKNN approaches weren't explored although a straightforward
+embedding search using cosine similarity given a query yielded superficially which is what the embeddings are supposed
+to provide. We used the `all-mpnet-base-v2` model from [sentence-transformers](https://www.sbert.net/).
+
+In all cases, given a user, we take the user-item matrix and find K most similar users
+by cosine similarity (except the given user). We then infer the rating by taking K nearest
+users and weigh them by several methods:
+
+- cosine similarity of user vectors from user-item matrix
+- cosine similarity of title embeddins
+- cosine similarity of abstract embeddins
+- cosine similarity of title+abstract (labelled "text" in code) embeddings
+
+There are also embedding variants where we use mean and max similarity of other users
+to the given user. The max variant is inspired by Ghasemi et al. 2021 where they
+used max-similarity of product reviews of two users.
+
+Pseudocode:
+
+```python
+def calculate_scores(user_id, k):
+  user_similarities = cosine_similarity(user_item_matrix[user_id], user_item_matrix)
+  similar_users = np.argsort(user_similarities)[::-1][:k + 1]
+  item_scores = np.zeros(num_items)
+
+  for similar_users in similar_users:
+    if user_id == similar_user:
+      continue
+
+    # `calculate_user_similarity` is one of the methods described above
+    user_similarity = calculate_user_similarity(user_id, similar_user)
+    item_scores += user_similarity * user_item_matrix[similar_user]
+
+  return item_scores
+```
+
+We also added a random score method as a sanity check.
+
+Also, we tried to combine two of the aforementioned methods by taking a weighted average.
+Namely user similarity and title+abstract similarity of users' items and chose the one
+with the highest F1 score.
+
+```python
+for w in np.arange(0.65, 0.75, 0.025):
+	weights = [w, 1 - w]
+	result = evaluate(10, ["user-similarity", "text-similarity-mean"], weights)
+	f1 = f1_score(result["precision"], result["recall"])
+	print(w, f1, result)
+```
+
+## Results
+
+Floats are rounded to 4 decimal places. Omitting title and abstract embeddings and max pooling as it performed
+worse than mean pooling.
+
+| (forget rate, k, method)                            |     f1 |   hitrate |   precision |   recall |
+|:----------------------------------------------------|-------:|----------:|------------:|---------:|
+| (0.97, 5, 'random')                                 | 0.0003 |    0.0065 |      0.0013 |   0.0002 |
+| (0.97, 5, 'text-similarity-mean')                   | 0.0846 |    0.7085 |      0.2521 |   0.0508 |
+| (0.97, 5, 'user-similarity')                        | 0.085  |    0.7073 |      0.2551 |   0.051  |
+| (0.97, 5, 'user-similarity, text-similarity-mean')  | 0.0879 |    0.7235 |      0.2647 |   0.0527 |
+| (0.97, 10, 'random')                                | 0.0009 |    0.0189 |      0.0019 |   0.0006 |
+| (0.97, 10, 'text-similarity-mean')                  | 0.1158 |    0.8438 |      0.2052 |   0.0807 |
+| (0.97, 10, 'user-similarity')                       | 0.1151 |    0.8435 |      0.2051 |   0.08   |
+| (0.97, 10, 'user-similarity, text-similarity-mean') | 0.1202 |    0.8519 |      0.2153 |   0.0833 |
+| (0.97, 25, 'random')                                | 0.0016 |    0.047  |      0.002  |   0.0013 |
+| (0.97, 25, 'text-similarity-mean')                  | 0.1474 |    0.955  |      0.1527 |   0.1425 |
+| (0.97, 25, 'user-similarity')                       | 0.1443 |    0.956  |      0.1491 |   0.1398 |
+| (0.97, 25, 'user-similarity, text-similarity-mean') | 0.1511 |    0.9586 |      0.1573 |   0.1453 |
+| (0.97, 50, 'random')                                | 0.0024 |    0.096  |      0.0021 |   0.0029 |
+| (0.97, 50, 'text-similarity-mean')                  | 0.1491 |    0.9885 |      0.117  |   0.2053 |
+| (0.97, 50, 'user-similarity')                       | 0.146  |    0.9897 |      0.1142 |   0.2025 |
+| (0.97, 50, 'user-similarity, text-similarity-mean') | 0.1515 |    0.9901 |      0.1193 |   0.2077 |
+
+
+As can be seen in the table, embeddings which are derived from content, are beneficial when there
+is less information about users. This is a common observation in recommender systems (Kula. 2015 - LightFM).
+
+It should be noted that we're always doing collaborative filtering, i.e. we're always using the user-item matrix
+even when using text embeddings. All of the results (besides the random baseline) are relatively similar.
+
+Result graphs for forget rate 0.97. Method "identity" is another sanity check, it's just returning the
+user vector from trainig data.
+
+![Results for forget_rate=0.97](./paper/results.png)
+
+Comparing that to the results from Dacrema et al. 2019, we can see that our results are worse.
+It isn't clear to thus how their methods were implemented even though their code is available
+on [GitHub](https://github.com/MaurizioFD/RecSys2019_DeepLearning_Evaluation/tree/574c25520103106abea6f69f3905c98fd327fb28)
+as is [ours](https://github.com/tmscer/text-embeddings-for-recommenders).
+
+![Recall from Dacrema et al. 2019](./paper/decrema19-recall.png)
+![Hitrate and NDCG from Dacrema et al. 2019](./paper/decrema19-hr-ndcg.png)
+
+## Looking back
+
+Variants of tried approaches and other approaches could be tried:
+
+- optimizing for the shrinkage parameter in cosine similarity
+
+  ```python  
+  # `h` is called the shrinkage parameter
+  def cosine_similarity(v1, v2, h=0.0):
+      return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2) + h)
+  ```
+
+- using other suitable similarity measures (e.g. for the embeddings, only certain similarity measures are suitable according to their authors)
+- using other recommender approaches, e.g. matrix factorization methods. As demonstrated in Dacrema et al. 2019, complex neural approaches
+are likely to be outperformed by tuned simple methods.
+
+## Mistakes
+
+1. Better dataset hygiene could have been used. We've managed to extract train, validation and test splits from Dacrema et al. 2019 in the end
+but only used the information how many user-item records were kept in trainig data (~2.7%, we kept 3% at random between hyperparam search and eval runs).
+2. Not using random number generator seeds to make the experiments exactly reproducible.
+3. Not evaluating purely content-based approaches since they have merit when there isn't a lot of collaborative data.
