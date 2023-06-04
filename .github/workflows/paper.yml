@@ -26,6 +26,12 @@ jobs:
           docker run --rm -v $(pwd):/src -w /src ghcr.io/tmscer/texlive-pandoc:latest
           pandoc -V geometry:margin=1.5in paper/paper.md -o paper.pdf -f markdown+implicit_figures
 
+      - name: (debug) List files
+        run: ls -la paper
+
+      - name: (debug) List files
+        run: ls -la
+
       - name: Upload to S3
         env:
           AWS_DEFAULT_REGION: eu-west-1
