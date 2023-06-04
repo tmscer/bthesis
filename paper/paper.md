@@ -286,3 +286,9 @@ are likely to be outperformed by tuned simple methods.
 but only used the information how many user-item records were kept in trainig data (~2.7%, we kept 3% at random between hyperparam search and eval runs).
 2. Not using random number generator seeds to make the experiments exactly reproducible.
 3. Not evaluating purely content-based approaches since they have merit when there isn't a lot of collaborative data.
+
+## Cached computations
+
+Some computations take a lot of time. That's why we provide cached embeddings, their similarity matrices and other files.
+They can be downloaded from [https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/cached-computations.tar](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/cached-computations.tar),
+the size is a few GB.

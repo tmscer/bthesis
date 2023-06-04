@@ -37,9 +37,9 @@ class CacheFiles:
 
 
 class Recommender:
-    def __init__(self, loader):
+    def __init__(self, loader, cache_root):
         self.loader = loader
-        self.files = CacheFiles(loader.files.root)
+        self.files = CacheFiles(cache_root)
 
         self.collaborative_user_similarities = None
         self.collaborative_item_similarities = None

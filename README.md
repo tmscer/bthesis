@@ -24,3 +24,9 @@ See it [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/paper.pdf). It's 
 
 See them [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/notes.pdf). Heading on first page doesn't match,
 the PDF also contains notes on recommender systems. Updates are uploaded sporadically.
+
+# Cached computations
+
+Some computations take a lot of time. That's why we provide cached embeddings, their similarity matrices and other files.
+They can be downloaded from [here](https://f35ba6fb-bthe.s3.eu-west-1.amazonaws.com/cached-computations.tar),
+the size is a few GB. Put them in `datasets/citeulike-a-cache/` and you're good to go.
