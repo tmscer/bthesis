@@ -4,3 +4,4 @@ pandas
 sentence_transformers
 sklearn
 scipy
+tabulate
