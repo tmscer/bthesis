@@ -262,6 +262,7 @@ on [GitHub](https://github.com/MaurizioFD/RecSys2019_DeepLearning_Evaluation/tre
 as is [ours](https://github.com/tmscer/text-embeddings-for-recommenders).
 
 ![Recall from Dacrema et al. 2019](./paper/decrema19-recall.png)
+
 ![Hitrate and NDCG from Dacrema et al. 2019](./paper/decrema19-hr-ndcg.png)
 
 ## Looking back
